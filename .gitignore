@@ -1,0 +1,9 @@
+﻿venv/
+.env
+__pycache__/
+*.pyc
+*.log
+instance/
+*.sqlite
+*.sqlite3
+bookshop.db

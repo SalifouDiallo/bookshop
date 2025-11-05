@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bookshop — App</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="/frontend/css/styles.css" />
+  </head>
+
+  <body>
+    <div class="container py-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="m-0">📚 Bookshop</h2>
+        <div>
+          <a class="btn btn-outline-primary me-2" data-bs-toggle="tab" data-bs-target="#catalogue">Catalogue</a>
+          <a class="btn btn-outline-success me-2" data-bs-toggle="tab" data-bs-target="#panier">Panier & Commande</a>
+          <a class="btn btn-outline-secondary" data-bs-toggle="tab" data-bs-target="#suivi">Suivi</a>
+        </div>
+      </div>
+
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#catalogue" type="button" role="tab">
+            Catalogue
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#panier" type="button" role="tab">
+            Panier & Commande
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" data-bs-toggle="tab" data-bs-target="#suivi" type="button" role="tab">
+            Suivi
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <!-- Onglet Catalogue -->
+        <div class="tab-pane fade show active" id="catalogue" role="tabpanel">
+          <div class="input-group mt-3">
+            <input id="q" class="form-control" placeholder="Recherche titre ou auteur..." />
+            <button id="btnQ" class="btn btn-primary">Rechercher</button>
+            <button id="btnReload" class="btn btn-outline-secondary">Tout afficher</button>
+          </div>
+          <div id="grid" class="row mt-3 g-3"></div>
+        </div>
+
+        <!-- Onglet Panier & Commande -->
+        <div class="tab-pane fade" id="panier" role="tabpanel">
+          <div id="cartView" class="mt-3"></div>
+
+          <hr />
+
+          <h5>Informations client</h5>
+          <form id="orderForm" class="row g-3">
+            <div class="col-md-4">
+              <input class="form-control" name="nom" placeholder="Nom" required />
+            </div>
+            <div class="col-md-4">
+              <input class="form-control" name="email" placeholder="Email" required />
+            </div>
+            <div class="col-md-4">
+              <input class="form-control" name="adresse" placeholder="Adresse" required />
+            </div>
+            <div class="col-12">
+              <button class="btn btn-success" type="submit">Passer commande</button>
+            </div>
+          </form>
+
+          <div id="orderResult" class="mt-3"></div>
+        </div>
+
+        <!-- Onglet Suivi -->
+        <div class="tab-pane fade" id="suivi" role="tabpanel">
+          <div class="input-group my-3">
+            <input id="suiviId" type="number" class="form-control" placeholder="ID commande" />
+            <button id="btnSuivi" class="btn btn-secondary">Afficher</button>
+          </div>
+          <div id="suiviOut"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+      import {
+        getBooks,
+        createOrder,
+        getOrderById,
+        updateOrderStatus,
+      } from "/frontend/js/api.js";
+
+      const grid = document.getElementById("grid");
+      const q = document.getElementById("q");
+
+      document.getElementById("btnQ").addEventListener("click", loadBooks);
+      document.getElementById("btnReload").addEventListener("click", () => {
+        q.value = "";
+        loadBooks();
+      });
+
+      function money(c) {
+        return (c / 100).toFixed(2) + "$";
+      }
+
+      function addToCart(b) {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        const f = cart.find((x) => x.book_id === b.id);
+        if (f) f.quantite += 1;
+        else cart.push({ book_id: b.id, titre: b.titre, prix_cents: b.prix_cents, quantite: 1 });
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();
+      }
+
+      async function loadBooks() {
+        grid.innerHTML = '<div class="text-muted">Chargement…</div>';
+        const books = await getBooks(q.value);
+        grid.innerHTML = "";
+        books.forEach((b) => {
+          const col = document.createElement("div");
+          col.className = "col-12 col-md-6 col-lg-4";
+          col.innerHTML = `
+            <div class="card book-card shadow-sm h-100">
+              <img src="${b.image_url || "https://picsum.photos/seed/noimg/600/360"}" alt="cover" />
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">${b.titre}</h5>
+                <div class="text-muted mb-2">${b.auteur}</div>
+                <div class="mt-auto d-flex justify-content-between align-items-center">
+                  <span class="badge bg-light text-dark">${money(b.prix_cents)}</span>
+                  <button class="btn btn-sm ${b.disponible ? "btn-primary" : "btn-outline-secondary"}"
+                          ${b.disponible ? "" : "disabled"}>
+                    Ajouter
+                  </button>
+                </div>
+                ${b.disponible ? "" : '<small class="text-danger mt-2">Indisponible</small>'}
+              </div>
+            </div>
+          `;
+          col.querySelector("button")?.addEventListener("click", () => addToCart(b));
+          grid.appendChild(col);
+        });
+      }
+
+      const cartView = document.getElementById("cartView");
+
+      function renderCart() {
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        if (cart.length === 0) {
+          cartView.innerHTML = '<div class="alert alert-info">Panier vide.</div>';
+          return;
+        }
+        let sous = 0;
+        const rows = cart
+          .map((it, i) => {
+            const t = it.prix_cents * it.quantite;
+            sous += t;
+            return `
+              <tr>
+                <td>${it.titre}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    value="${it.quantite}"
+                    data-i="${i}"
+                    class="form-control form-control-sm qty"
+                  />
+                </td>
+                <td class="text-end">${money(it.prix_cents)}</td>
+                <td class="text-end">${money(t)}</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-danger rm" data-i="${i}">X</button>
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+
+        cartView.innerHTML = `
+          <table class="table align-middle">
+            <thead>
+              <tr>
+                <th>Livre</th>
+                <th>Qté</th>
+                <th class="text-end">Prix</th>
+                <th class="text-end">Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <div class="text-end"><strong>Sous-total estimé:</strong> ${money(sous)}</div>
+        `;
+
+        cartView.querySelectorAll(".qty").forEach((inp) =>
+          inp.addEventListener("change", (e) => {
+            const i = +e.target.dataset.i;
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            cart[i].quantite = Math.max(1, parseInt(e.target.value || "1"));
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+          })
+        );
+
+        cartView.querySelectorAll(".rm").forEach((btn) =>
+          btn.addEventListener("click", (e) => {
+            const i = +e.target.dataset.i;
+            const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+            cart.splice(i, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            renderCart();
+          })
+        );
+      }
+
+      renderCart();
+
+      const orderForm = document.getElementById("orderForm");
+      const orderResult = document.getElementById("orderResult");
+
+      orderForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+        if (cart.length === 0) {
+          orderResult.innerHTML = '<div class="alert alert-warning">Panier vide.</div>';
+          return;
+        }
+        const fd = new FormData(orderForm);
+        const payload = {
+          client: {
+            nom: fd.get("nom"),
+            email: fd.get("email"),
+            adresse: fd.get("adresse"),
+          },
+          items: cart.map((x) => ({ book_id: x.book_id, quantite: x.quantite })),
+        };
+
+        try {
+          const data = await createOrder(payload);
+          localStorage.removeItem("cart");
+          renderCart();
+          orderResult.innerHTML = `
+            <div class="alert alert-success">
+              Commande créée ! ID: <strong>${data.id}</strong> — Total: ${money(data.total_cents)}
+            </div>
+          `;
+        } catch (err) {
+          orderResult.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+        }
+      });
+
+      const suiviOut = document.getElementById("suiviOut");
+      document.getElementById("btnSuivi").addEventListener("click", loadSuivi);
+
+      async function loadSuivi() {
+        const id = document.getElementById("suiviId").value;
+        if (!id) {
+          suiviOut.innerHTML = '<div class="alert alert-warning">Entrer un ID.</div>';
+          return;
+        }
+        try {
+          const o = await getOrderById(id);
+          const items = o.items
+            .map(
+              (it) => `
+                <li class="list-group-item d-flex justify-content-between">
+                  ${it.titre} x ${it.quantite}
+                  <span>${money(it.ligne_total_cents)}</span>
+                </li>
+              `
+            )
+            .join("");
+
+          suiviOut.innerHTML = `
+            <div class="card">
+              <div class="card-body">
+                <h5>
+                  Commande #${o.id} —
+                  <span class="badge bg-info text-dark">${o.statut}</span>
+                </h5>
+                <p>
+                  <strong>${o.client.nom}</strong> — ${o.client.email}<br />
+                  ${o.client.adresse}
+                </p>
+                <ul class="list-group mb-3">
+                  ${items}
+                </ul>
+                <p class="text-end">
+                  <strong>Sous-total:</strong> ${money(o.sous_total_cents)}<br />
+                  <strong>Taxes:</strong> ${money(o.taxes_cents)}<br />
+                  <strong>Livraison:</strong> ${money(o.livraison_cents)}<br />
+                  <strong>Total:</strong> ${money(o.total_cents)}
+                </p>
+                <div class="btn-group">
+                  <button class="btn btn-outline-secondary" data-s="en_attente">Mettre en attente</button>
+                  <button class="btn btn-outline-success" data-s="payee">Marquer payée</button>
+                  <button class="btn btn-outline-primary" data-s="livree">Marquer livrée</button>
+                </div>
+              </div>
+            </div>
+          `;
+
+          suiviOut.querySelectorAll("button[data-s]").forEach((b) =>
+            b.addEventListener("click", async () => {
+              const s = b.getAttribute("data-s");
+              await updateOrderStatus(o.id, s);
+              loadSuivi();
+            })
+          );
+        } catch (err) {
+          suiviOut.innerHTML = `<div class="alert alert-danger">${err.message}</div>`;
+        }
+      }
+
+      // Chargement initial du catalogue
+      loadBooks();
+    </script>
+  </body>
+</html>

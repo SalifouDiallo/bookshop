@@ -1,8 +1,15 @@
-﻿from ..database import db
+﻿# Script de "seed" pour remplir la base avec une liste de livres.
+# On l'utilise surtout au début du projet pour avoir des données de test.
+# Ce fichier reste simple : il appelle init_db(), puis insère les lignes définies en bas.
+
+from ..database import db
 from ..models import Livre
 from ..app import init_db
 import json
 
+# Données de départ : une trentaine de livres.
+# On les met dans un JSON multi-ligne pour que ce soit plus propre
+# et plus facile à modifier si jamais on ajoute/enlève un livre.
 ROWS = json.loads(r"""
 [
   {"titre":"Python pour les nuls","auteur":"John Doe","prix_cents":2999,"disponible":true,"image_url":"https://picsum.photos/seed/py1/600/360"},
@@ -39,11 +46,17 @@ ROWS = json.loads(r"""
 """)
 
 def run():
-    init_db()
+    """Lance l’initialisation + l’insertion des livres."""
+    init_db()  # crée les tables si elles n’existent pas
+
+    # On utilise une transaction pour éviter les demi-insertions
     with db.atomic():
         for r in ROWS:
             Livre.create(**r)
-    print(f"Seed OK: {len(ROWS)} livres insérés")
 
+    print(f"Seed OK : {len(ROWS)} livres insérés")
+
+
+# Si on exécute directement ce fichier -> on charge la BD automatiquement.
 if __name__ == "__main__":
     run()

@@ -1,0 +1,37 @@
+@startuml
+
+class Livre {
+  +id : int
+  +titre : string
+  +auteur : string
+  +prix_cents : int
+  +disponible : bool
+  +image_url : string
+}
+
+class Client {
+  +id : int
+  +nom : string
+  +email : string
+  +adresse : text
+}
+
+class Commande {
+  +id : int
+  +sous_total_cents : int
+  +taxes_cents : int
+  +livraison_cents : int
+  +total_cents : int
+  +statut : string
+}
+
+class CommandeLivre {
+  +id : int
+  +quantite : int
+}
+
+Client "1" --> "0..*" Commande : passe >
+Commande "1" --> "1..*" CommandeLivre : contient >
+Livre "1" --> "0..*" CommandeLivre : associé à >
+
+@enduml

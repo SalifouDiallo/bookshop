@@ -1,3 +1,6 @@
-Flask==3.0.3
-peewee==3.17.6
-Flask-Cors==4.0.1
+# Dépendances Python nécessaires pour faire fonctionner le backend Bookshop.
+# À installer avec : pip install -r requirements.txt
+
+Flask==3.0.3        # Framework web principal
+peewee==3.17.6      # ORM utilisé pour manipuler la base SQLite
+Flask-Cors==4.0.1   # Autorise les requêtes du frontend (CORS)

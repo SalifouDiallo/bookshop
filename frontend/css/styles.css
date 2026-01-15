@@ -1,1 +1,13 @@
-body{padding:20px}.book-card img{width:100%;height:180px;object-fit:cover;border-top-left-radius:.5rem;border-top-right-radius:.5rem}
+/* Styles généraux de la page */
+body {
+  padding: 20px;
+}
+
+/* Style des cartes de livres du catalogue */
+.book-card img {
+  width: 100%;                /* L'image prend toute la largeur de la carte */
+  height: 180px;              /* Hauteur fixe pour garder un format uniforme */
+  object-fit: cover;          /* Coupe l'image proprement si elle dépasse */
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}

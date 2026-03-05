@@ -17,7 +17,7 @@ Le frontend est développé en **HTML / CSS / JavaScript** avec **Bootstrap**.
 
 ## Catalogue des livres
 
-![Catalogue](docs/screenshots/catalogue.png)
+![Catalogue](docs/catalogue.png)
 
 Les utilisateurs peuvent consulter les livres disponibles et effectuer une recherche par **titre ou auteur**.
 
@@ -25,7 +25,7 @@ Les utilisateurs peuvent consulter les livres disponibles et effectuer une reche
 
 ## Panier et commande
 
-![Panier](docs/screenshots/panier.png)
+![Panier](docs/panier.png)
 
 Les livres peuvent être ajoutés au **panier**, puis une commande peut être créée avec les informations du client.
 
@@ -33,7 +33,7 @@ Les livres peuvent être ajoutés au **panier**, puis une commande peut être cr
 
 ## Suivi des commandes
 
-![Suivi](docs/screenshots/suivi.png)
+![Suivi](docs/suivi.png)
 
 Les commandes peuvent être recherchées par **ID** et leur statut peut être mis à jour :
 

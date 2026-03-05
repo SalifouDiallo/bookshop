@@ -90,7 +90,7 @@ Calcul automatique :
 ---
 
 # Architecture du projet
-
+```
 bookshop/
 │
 ├── backend/
@@ -109,7 +109,7 @@ bookshop/
 │ └── js/api.js # appels API (fetch)
 │
 └── README.md
-
+```
 
 ---
 

@@ -15,6 +15,7 @@
 ## 📋 Table des matières
 
 - [Aperçu](#-aperçu)
+- [Captures d'écran](#-captures-décran)
 - [Fonctionnalités](#-fonctionnalités)
 - [Stack technique](#-stack-technique)
 - [Structure du projet](#-structure-du-projet)
@@ -33,6 +34,19 @@ Bookshop est une **Single Page Application (SPA)** permettant de gérer une libr
 - 🛒 Gérer un panier et passer des commandes
 - 🔍 Suivre l'état d'une commande par identifiant
 - ✅ Mettre à jour le statut d'une commande (en attente → payée → livrée)
+
+---
+
+## 📸 Captures d'écran
+
+**Catalogue de livres**
+![Catalogue](Catalogue.png)
+
+**Panier et commande**
+![Panier](Panier_commande.png)
+
+**Suivi de commande**
+![Suivi](Suivi_commande.png)
 
 ---
 

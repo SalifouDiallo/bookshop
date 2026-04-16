@@ -1,0 +1,22 @@
+@startuml
+
+actor Utilisateur
+participant "Frontend Suivi" as Frontend
+participant "API Flask" as API
+database "SQLite" as DB
+
+Utilisateur -> Frontend : Entrer ID commande
+Frontend -> API : GET /orders/{id}
+API -> DB : SELECT commande + client + lignes
+DB --> API : Données
+API --> Frontend : JSON commande
+
+== Changer statut ==
+
+Utilisateur -> Frontend : Cliquer statut
+Frontend -> API : PUT /orders/{id}/status
+API -> DB : UPDATE commande SET statut=...
+DB --> API : OK
+API --> Frontend : { id, statut }
+
+@enduml

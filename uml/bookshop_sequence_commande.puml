@@ -1,0 +1,32 @@
+@startuml
+
+actor Utilisateur
+participant "Frontend\n(app.html)" as Frontend
+participant "API Flask\n(app.py)" as API
+database "SQLite\n(Peewee)" as DB
+
+Utilisateur -> Frontend : Ajouter livres au panier
+Frontend -> API : GET /books
+API -> DB : SELECT * FROM livre
+DB --> API : Résultats
+API --> Frontend : JSON livres
+
+== Passer commande ==
+
+Utilisateur -> Frontend : Remplir formulaire
+Frontend -> API : POST /orders\n(client + items)
+
+API -> DB : INSERT client
+DB --> API : id
+
+API -> DB : INSERT commande
+DB --> API : id
+
+loop items
+  API -> DB : INSERT commande_livre
+  DB --> API : OK
+end
+
+API --> Frontend : JSON { id, total }
+
+@enduml

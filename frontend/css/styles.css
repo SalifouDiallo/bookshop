@@ -1,0 +1,246 @@
+/* ========================= */
+/* Styles généraux */
+/* ========================= */
+body {
+  padding: 20px;
+  background-color: #f8f9fa;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #212529;
+}
+
+/* ========================= */
+/* En-tête */
+/* ========================= */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: #ffffff;
+  padding: 18px 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.app-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #0d6efd;
+}
+
+.nav-shortcut {
+  transition: all 0.2s ease;
+  border-radius: 10px;
+}
+
+.nav-shortcut:hover {
+  transform: translateY(-2px);
+}
+
+/* ========================= */
+/* Onglets */
+/* ========================= */
+.custom-tabs {
+  margin-top: 10px;
+}
+
+.custom-tabs .nav-link {
+  font-weight: 500;
+  color: #495057;
+  transition: all 0.2s ease;
+}
+
+.custom-tabs .nav-link.active {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  font-weight: 600;
+}
+
+/* ========================= */
+/* Barre de recherche */
+/* ========================= */
+.search-bar input {
+  border-radius: 10px 0 0 10px;
+}
+
+.search-bar button:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+/* ========================= */
+/* Cartes de section */
+/* ========================= */
+.section-card {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+/* ========================= */
+/* Cartes de livres */
+/* ========================= */
+.book-card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  background: #ffffff;
+}
+
+.book-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.book-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.book-card .card-body {
+  padding: 15px;
+}
+
+.book-card h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* ========================= */
+/* Boutons */
+/* ========================= */
+button,
+.btn {
+  transition: all 0.2s ease;
+}
+
+button:hover,
+.btn:hover {
+  transform: scale(1.03);
+}
+
+/* ========================= */
+/* Panier */
+/* ========================= */
+.cart-empty {
+  text-align: center;
+  color: #6c757d;
+  margin-top: 20px;
+  font-style: italic;
+}
+
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
+/* ========================= */
+/* Résumé commande */
+/* ========================= */
+.order-summary {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.order-total {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #198754;
+}
+
+/* ========================= */
+/* Messages */
+/* ========================= */
+.success-message {
+  animation: fadeIn 0.45s ease-in-out;
+}
+
+/* ========================= */
+/* Badge panier */
+/* ========================= */
+#cartCountBadge {
+  font-size: 0.75rem;
+  vertical-align: middle;
+}
+
+/* ========================= */
+/* Carte suivi commande */
+/* ========================= */
+#suiviOut .card {
+  border: none;
+  border-radius: 14px;
+}
+
+/* ========================= */
+/* Animation */
+/* ========================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================= */
+/* Responsive */
+/* ========================= */
+@media (max-width: 768px) {
+  body {
+    padding: 14px;
+  }
+
+  .app-header {
+    padding: 16px;
+  }
+
+  .app-title {
+    font-size: 1.5rem;
+  }
+
+  .section-card {
+    padding: 14px;
+  }
+
+  .book-card img {
+    height: 200px;
+  }
+}
+/* ========================= */
+/* Description des livres    */
+/* ========================= */
+.book-description {
+  line-height: 1.45;
+  min-height: 3.5rem;
+  color: #555;
+}
+
+/* ========================= */
+/* Validation formulaire     */
+/* ========================= */
+.was-validated .form-control:valid {
+  border-color: #198754;
+}
+
+.was-validated .form-control:invalid {
+  border-color: #dc3545;
+}
+
+/* ========================= */
+/* Compteur résultats        */
+/* ========================= */
+#resultsCount {
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
